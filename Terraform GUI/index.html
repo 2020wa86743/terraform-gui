@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form with Download</title>
+  <style>
+    /* Simple styling for the form */
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 300px;
+      margin: auto;
+    }
+    input, select, button {
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+  </style>
+  <script>
+    // Function to validate inputs and download the content as a text file
+    function downloadFile(event) {
+      event.preventDefault();
+ 
+      // Get input values
+      const input1 = document.getElementById("input1").value;
+      const selectdrop = document.getElementById("selectdrop").value;
+      const input3 = document.getElementById("input3").value;
+      const selectOption = document.getElementById("selectOption").value;
+ 
+      // Validate each text input
+      const regex = /^[a-zA-Z\-]+$/;
+      if (!regex.test(input1) || !regex.test(input3)) {
+        alert("Please use only letters and dashes (-) in the text fields.");
+        return;
+      }
+ 
+      // Create the content for the text file
+      const content = `name= "${input1}"\nlocation= "${selectdrop}"\nVnet-name= "${input3}"\naddress_space= ${selectOption}`;
+ 
+      // Create a Blob with the content
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+link.download = "terraform.tfvars";
+link.click();
+ 
+      // Clean up the URL object after download
+      URL.revokeObjectURL(link.href);
+    }
+  </script>
+</head>
+<body style="background-color: #e0f7fa;">
+ 
+  <h2 style="color: rgb(255, 255, 255); background-color: #007BFF; font-size: 30px; border: none; border-radius: 4px; text-align: center; height: 40px; line-height: 35px;">Terraform Configuration File</h2>
+  <form onsubmit="downloadFile(event)">
+    <label for="input1">Resource Group Name : </label>
+    <input type="text" id="input1" required pattern="[a-zA-Z\-]+" title="Only letters and dashes allowed.">
+ 
+    <label for="selectdrop">Resource Group Location : </label>
+    <select id="selectdrop" required>
+      <option value="">Select an option</option>
+      <option value="East US">East US</option>
+      <option value="West Europe">West Europe</option>
+      <option value="Central India">Central India</option>
+    </select>
+ 
+    <label for="input3">Virtual Network Name : </label>
+    <input type="text" id="input3" required pattern="[a-zA-Z\-]+" title="Only letters and dashes allowed.">
+ 
+    <label for="selectOption">Address space : </label>
+    <select id="selectOption" required>
+      <option value="">Select an option</option>
+      <option value=["10.0.0.0/16"]>["10.0.0.0/16"]</option>
+      <option value=["10.0.0.0/16"]>["10.0.0.0/24"]</option>
+      <option value=["10.0.0.0/16"]>["10.0.0.0/32"]</option>
+    </select>
+ 
+    <button type="submit" style="padding: 10px 20px; font-size: 16px; color: white; background-color: #007BFF; border: none; border-radius: 4px; cursor: pointer;">Submit and Download</button>
+  </form>
+ 
+</body>
+</html>
